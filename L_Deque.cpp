@@ -1,48 +1,55 @@
 #include <bits/stdc++.h>
 using namespace std;
+
 #define int long long int
-
-int dp[101][100001];
-int suffix[105];
-int n, mod = 1e9 + 7;
-vector<int> a(101);
-
-int fun(int idx, int rem)
+int dp[3001][3001][2];
+vector<int> a;
+int fun(int l, int r, int turn)
 {
-    if (idx == n)
-        return rem == 0;
-
-    if (dp[idx][rem] != -1)
-        return dp[idx][rem];
-
-    if (suffix[idx] == rem)
-        return dp[idx][rem] = 1;
-
-    int ans = 0;
-    for (int i = 0; i <= a[i]; i++)
+    if (l == r)
     {
-        if (i > rem)
-            break;
-
-        ans += fun(idx + 1, rem - a[idx]);
-        ans %= mod;
+        if (turn == 0)
+            return a[l];
+        else if (turn == 1)
+            return 0;
     }
 
-    return dp[idx][rem] = ans;
+    if (dp[l][r][turn] != -1)
+        return dp[l][r][turn];
+
+    if (turn == 0)
+    {
+        int op1 = a[l] + fun(l + 1, r, !turn);
+        int op2 = a[r] + fun(l, r - 1, !turn);
+        return dp[l][r][turn] = max(op1, op2);
+    }
+    else if (turn == 1)
+    {
+        int op1 = fun(l + 1, r, !turn);
+        int op2 = fun(l, r - 1, !turn);
+        return dp[l][r][turn] = min(op1, op2);
+    }
+    return dp[l][r][turn];
 }
+
 int32_t main()
 {
-    int k;
-    cin >> n >> k;
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+
     memset(dp, -1, sizeof(dp));
+    int n, sum = 0;
+    cin >> n;
 
+    vector<int> arr(n);
     for (int i = 0; i < n; i++)
-        cin >> a[i];
+    {
+        cin >> arr[i];
+        sum += arr[i];
+    }
+    a = arr;
 
-    int sum = 0;
-    for (int i = n - 1; i >= 0; i--)
-        sum += a[i], suffix[i] = sum;
-
-    cout << fun(0, k);
+    cout << 2 * fun(0, n - 1, 0) - sum;
+    return 0;
 }
-
