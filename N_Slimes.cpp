@@ -18,6 +18,7 @@ int fun(int left, int right, vector<int> &a, vector<vector<int>> &dp)
     int ans = 1e15;
     for (int b = left + 1; b <= right; b++)
     {
+        // x -> cost of x side, y- > cost of y side , total = total size after combining
         int res = fun(left, b - 1, a, dp) + fun(b, right, a, dp) + total_size;
         ans = min(ans, res);
     }
@@ -26,6 +27,10 @@ int fun(int left, int right, vector<int> &a, vector<vector<int>> &dp)
 
 int32_t main()
 {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+
     int n;
     cin >> n;
 

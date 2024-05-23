@@ -304,7 +304,7 @@ int32_t main()
     cout.tie(NULL);
 
     int t = 1;
-    cin >> t;
+    // cin >> t;
     for (int i = 1; i <= t; i++)
     {
         // cout << "\nCase " << i << ":\n";
@@ -313,15 +313,46 @@ int32_t main()
     }
     return 0;
 }
+
+int fun(int curr, vector<int> grid[], vector<int> &dp)
+{
+    if (dp[curr] != -1)
+        return dp[curr];
+
+    int ans = 0;
+    for (int children : grid[curr])
+    {
+        //cout << curr + 1 << "->" << children + 1 << endl;
+        ans = max(ans, fun(children, grid, dp));
+    }
+
+    return dp[curr] = ans + 1;
+}
 void solve()
 {
     int n;
     cin >> n;
+    int m;
+    cin >> m;
 
-    vector<int> a(n);
+    vector<int> grid[n];
 
+    for (int i = 0; i < m; i++)
+    {
+        int u, v;
+        cin >> u >> v;
+
+        u--, v--;
+
+        grid[u].push_back(v);
+    }
+
+    vector<int> dp(n, -1);
+
+    int ans = 0;
     for (int i = 0; i < n; i++)
     {
-        cin >> a[i];
+        ans = max(ans, fun(i, grid, dp));
     }
+    cout << ans - 1;
 }
